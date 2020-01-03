@@ -10,6 +10,8 @@ public:
 
     static cv::Mat changeBrightness(cv::Mat &I, int amount);
 
+    static cv::Mat changeRGBToGray(cv::Mat &I);
+
 private:
     static int limitValue(int val);
 };

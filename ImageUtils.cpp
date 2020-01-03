@@ -56,3 +56,25 @@ int ImageUtils::limitValue(int val) {
         return val;
     }
 }
+
+cv::Mat ImageUtils::changeRGBToGray(cv::Mat &I) {
+    CV_Assert(I.depth() != sizeof(uchar));
+    switch (I.channels()) {
+        case 3:
+            cv::Mat_<cv::Vec3b> _I = I;
+            float wAvg;
+            int newValue = 0;
+            for (int i = 0; i < I.rows; ++i)
+                for (int j = 0; j < I.cols; ++j) {
+                    wAvg = 0.0f;
+                    wAvg += (_I(i, j)[0] * GRAY_B + _I(i, j)[1] * GRAY_G + _I(i, j)[2] * GRAY_R);
+                    newValue = limitValue(wAvg);
+                    for (int n = 0; n <= 2; ++n) {
+                        _I(i, j)[n] = newValue;
+                    }
+                }
+            I = _I;
+            break;
+    }
+    return I;
+}
