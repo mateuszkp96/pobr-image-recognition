@@ -8,6 +8,16 @@ find_package(OpenCV REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-add_executable(pobr main.cpp)
+set(HEADER_FILES
+        ImageUtils.h
+        Constants.h
+        )
+
+set(SOURCE_FILES
+        ImageUtils.cpp
+        main.cpp
+        )
+
+add_executable(pobr ${SOURCE_FILES} ${HEADER_FILES})
 
 target_link_libraries(pobr ${OpenCV_LIBS})
