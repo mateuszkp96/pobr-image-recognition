@@ -9,12 +9,14 @@ find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 set(HEADER_FILES
-        ImageUtils.h
         Constants.h
+        ImageUtils.h
+        Utils.h
         )
 
 set(SOURCE_FILES
         ImageUtils.cpp
+        Utils.cpp
         main.cpp
         )
 

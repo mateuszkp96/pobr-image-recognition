@@ -1,6 +1,7 @@
 #include "ImageUtils.h"
 
 #include <algorithm>
+#include "Utils.h"
 #include "Constants.h"
 
 cv::Mat ImageUtils::changeContrast(cv::Mat &I, float percent) {
@@ -9,14 +10,14 @@ cv::Mat ImageUtils::changeContrast(cv::Mat &I, float percent) {
         case 1:
             for (int i = 0; i < I.rows; ++i)
                 for (int j = 0; j < I.cols; ++j)
-                    I.at<uchar>(i, j) = limitValue(I.at<uchar>(i, j) * percent);
+                    I.at<uchar>(i, j) = Utils::limitValue(I.at<uchar>(i, j) * percent);
             break;
         case 3:
             cv::Mat_<cv::Vec3b> _I = I;
             for (int i = 0; i < I.rows; ++i) {
                 for (int j = 0; j < I.cols; ++j) {
                     for (int n = 0; n < 3; ++n) {
-                        _I(i, j)[n] = limitValue(_I(i, j)[n] * percent);
+                        _I(i, j)[n] = Utils::limitValue(_I(i, j)[n] * percent);
                     }
                 }
             }
@@ -32,14 +33,14 @@ cv::Mat ImageUtils::changeBrightness(cv::Mat &I, int amount) {
         case 1:
             for (int i = 0; i < I.rows; ++i)
                 for (int j = 0; j < I.cols; ++j)
-                    I.at<uchar>(i, j) = limitValue(I.at<uchar>(i, j) + amount);
+                    I.at<uchar>(i, j) = Utils::limitValue(I.at<uchar>(i, j) + amount);
             break;
         case 3:
             cv::Mat_<cv::Vec3b> _I = I;
             for (int i = 0; i < I.rows; ++i) {
                 for (int j = 0; j < I.cols; ++j) {
                     for (int n = 0; n < 3; ++n) {
-                        _I(i, j)[n] = limitValue(_I(i, j)[n] + amount);
+                        _I(i, j)[n] = Utils::limitValue(_I(i, j)[n] + amount);
                     }
                 }
             }
@@ -49,17 +50,7 @@ cv::Mat ImageUtils::changeBrightness(cv::Mat &I, int amount) {
     return I;
 }
 
-int ImageUtils::limitValue(int val) {
-    if (val > MAX_VAL) {
-        return MAX_VAL;
-    } else if (val < MIN_VAL) {
-        return MIN_VAL;
-    } else {
-        return val;
-    }
-}
-
-cv::Mat ImageUtils::changeRGBToGray(cv::Mat &I) {
+cv::Mat ImageUtils::convertRGBToGray(cv::Mat &I) {
     CV_Assert(I.depth() != sizeof(uchar));
     switch (I.channels()) {
         case 3:
@@ -70,7 +61,7 @@ cv::Mat ImageUtils::changeRGBToGray(cv::Mat &I) {
                 for (int j = 0; j < I.cols; ++j) {
                     wAvg = 0.0f;
                     wAvg += (_I(i, j)[0] * GRAY_B + _I(i, j)[1] * GRAY_G + _I(i, j)[2] * GRAY_R);
-                    newValue = limitValue(wAvg);
+                    newValue = Utils::limitValue(wAvg);
                     for (int n = 0; n <= 2; ++n) {
                         _I(i, j)[n] = newValue;
                     }
@@ -128,25 +119,20 @@ cv::Mat ImageUtils::inRange(cv::Mat &I, const cv::Scalar &s1, const cv::Scalar &
         case 1:
             for (int i = 0; i < I.rows; ++i) {
                 for (int j = 0; j < I.cols; ++j) {
-                    res.at<uchar>(i, j) = isInInterval(I.at<uchar>(i, j), s1.val[0], s2.val[0]) ? MAX_VAL : MIN_VAL;
+                    res.at<uchar>(i, j) = Utils::isInInterval(I.at<uchar>(i, j), s1.val[0], s2.val[0]) ? MAX_VAL : MIN_VAL;
                 }
             }
-
             break;
         case 3:
             cv::Mat_<cv::Vec3b> _I = I;
             for (int i = 0; i < I.rows; ++i) {
                 for (int j = 0; j < I.cols; ++j) {
-                    res.at<uchar>(i, j) = isInInterval(_I(i, j)[0], s1.val[0], s2.val[0]) &&
-                                          isInInterval(_I(i, j)[1], s1.val[1], s2.val[1]) &&
-                                          isInInterval(_I(i, j)[2], s1.val[2], s2.val[2]) ? MAX_VAL : MIN_VAL;
+                    res.at<uchar>(i, j) = Utils::isInInterval(_I(i, j)[0], s1.val[0], s2.val[0]) &&
+                                          Utils::isInInterval(_I(i, j)[1], s1.val[1], s2.val[1]) &&
+                                          Utils::isInInterval(_I(i, j)[2], s1.val[2], s2.val[2]) ? MAX_VAL : MIN_VAL;
                 }
             }
             break;
     }
     return res;
-}
-
-bool ImageUtils::isInInterval(int val, int min, int max) {
-    return val >= min && val <= max;
 }
