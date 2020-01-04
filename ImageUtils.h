@@ -12,6 +12,8 @@ public:
 
     static cv::Mat changeRGBToGray(cv::Mat &I);
 
+    static cv::Mat rankFilter(cv::Mat &I, int kernelSize, int index);
+
 private:
     static int limitValue(int val);
 };
