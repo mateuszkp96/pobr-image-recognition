@@ -14,8 +14,12 @@ public:
 
     static cv::Mat rankFilter(cv::Mat &I, int kernelSize, int index);
 
+    static cv::Mat inRange(cv::Mat &I, const cv::Scalar &s1, const cv::Scalar &s2);
+
 private:
     static int limitValue(int val);
+
+    static bool isInInterval(int val, int min, int max);
 };
 
 

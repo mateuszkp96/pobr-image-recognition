@@ -120,3 +120,33 @@ cv::Mat ImageUtils::rankFilter(cv::Mat &I, const int kernelSize, const int index
     }
     return res;
 }
+
+cv::Mat ImageUtils::inRange(cv::Mat &I, const cv::Scalar &s1, const cv::Scalar &s2) {
+    CV_Assert(I.depth() != sizeof(uchar));
+    cv::Mat res(I.rows, I.cols, CV_8UC1);
+    switch (I.channels()) {
+        case 1:
+            for (int i = 0; i < I.rows; ++i) {
+                for (int j = 0; j < I.cols; ++j) {
+                    res.at<uchar>(i, j) = isInInterval(I.at<uchar>(i, j), s1.val[0], s2.val[0]) ? MAX_VAL : MIN_VAL;
+                }
+            }
+
+            break;
+        case 3:
+            cv::Mat_<cv::Vec3b> _I = I;
+            for (int i = 0; i < I.rows; ++i) {
+                for (int j = 0; j < I.cols; ++j) {
+                    res.at<uchar>(i, j) = isInInterval(_I(i, j)[0], s1.val[0], s2.val[0]) &&
+                                          isInInterval(_I(i, j)[1], s1.val[1], s2.val[1]) &&
+                                          isInInterval(_I(i, j)[2], s1.val[2], s2.val[2]) ? MAX_VAL : MIN_VAL;
+                }
+            }
+            break;
+    }
+    return res;
+}
+
+bool ImageUtils::isInInterval(int val, int min, int max) {
+    return val >= min && val <= max;
+}
