@@ -1,6 +1,7 @@
 #include "ImageUtils.h"
 
 #include <algorithm>
+#include <cmath>
 #include "Utils.h"
 #include "Constants.h"
 
@@ -52,24 +53,19 @@ cv::Mat ImageUtils::changeBrightness(cv::Mat &I, int amount) {
 
 cv::Mat ImageUtils::convertRGBToGray(cv::Mat &I) {
     CV_Assert(I.depth() != sizeof(uchar));
+    cv::Mat res(I.rows, I.cols, CV_8UC1);
     switch (I.channels()) {
         case 3:
             cv::Mat_<cv::Vec3b> _I = I;
-            float wAvg;
-            int newValue = 0;
+            double wAvg;
             for (int i = 0; i < I.rows; ++i)
                 for (int j = 0; j < I.cols; ++j) {
-                    wAvg = 0.0f;
-                    wAvg += (_I(i, j)[0] * GRAY_B + _I(i, j)[1] * GRAY_G + _I(i, j)[2] * GRAY_R);
-                    newValue = Utils::limitValue(wAvg);
-                    for (int n = 0; n <= 2; ++n) {
-                        _I(i, j)[n] = newValue;
-                    }
+                    wAvg = (_I(i, j)[0] * GRAY_B + _I(i, j)[1] * GRAY_G + _I(i, j)[2] * GRAY_R);
+                    res.at<uchar>(i,j) = Utils::limitValue(static_cast<int>(round(wAvg)));
                 }
-            I = _I;
             break;
     }
-    return I;
+    return res;
 }
 
 cv::Mat ImageUtils::rankFilter(cv::Mat &I, const int kernelSize, const int index) {
