@@ -132,3 +132,56 @@ cv::Mat ImageUtils::inRange(cv::Mat &I, const cv::Scalar &s1, const cv::Scalar &
     }
     return res;
 }
+
+cv::Mat ImageUtils::convertRGBToHSV(cv::Mat &I) {
+    CV_Assert(I.depth() != sizeof(uchar));
+    cv::Mat res(I.rows, I.cols, CV_8UC3); // H S V
+    switch (I.channels()) {
+        case 3:
+            int minIdx, maxIdx;
+            float minVal, maxVal;
+            int r, g, b;
+            float h, s, v;
+            cv::Mat_<cv::Vec3b> _R = res;
+            for (int i = 0; i < I.rows; ++i) {
+                for (int j = 0; j < I.cols; ++j) {
+                    cv::Vec3b intensity = I.at<cv::Vec3b>(i, j);
+                    b = intensity[BLUE_IDX];
+                    g = intensity[GREEN_IDX],
+                    r = intensity[RED_IDX];
+                    // max
+                    maxIdx = (b < g) ? GREEN_IDX : BLUE_IDX;
+                    maxIdx = (intensity[maxIdx] < r) ? RED_IDX : maxIdx;
+                    maxVal = intensity[maxIdx];
+                    // min
+                    minIdx = (b < g) ? BLUE_IDX : GREEN_IDX;
+                    minIdx = (intensity[minIdx] < r) ? minIdx : RED_IDX;
+                    minVal = intensity[minIdx];
+
+                    v = maxVal;
+                    s = v != 0 ? (v - minVal) / v : 0;
+                    switch (maxIdx) {
+                        case BLUE_IDX:
+                            h = 240 + 60 * (r - g) / (v - minVal);
+                            break;
+                        case GREEN_IDX:
+                            h = 120 + 60 * (b - r) / (v - minVal);
+                            break;
+                        case RED_IDX:
+                            h = 60 * (g - b) / (v - minVal);
+                            break;
+                        default:
+                            h = 0;
+                            break;
+                    }
+
+                    _R(i, j)[HUE_IDX] = h / 2;
+                    _R(i, j)[SAT_IDX] = 255 * s;
+                    _R(i, j)[VAL_IDX] = 255 * v;
+                }
+            }
+            res = _R;
+            break;
+    }
+    return res;
+}

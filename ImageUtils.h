@@ -12,6 +12,8 @@ public:
 
     static cv::Mat convertRGBToGray(cv::Mat &I);
 
+    static cv::Mat convertRGBToHSV(cv::Mat &I);
+
     static cv::Mat rankFilter(cv::Mat &I, int kernelSize, int index);
 
     static cv::Mat inRange(cv::Mat &I, const cv::Scalar &s1, const cv::Scalar &s2);
