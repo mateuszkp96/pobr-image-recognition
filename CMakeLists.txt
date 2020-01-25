@@ -11,6 +11,8 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 set(HEADER_FILES
         Constants.h
         ImageUtils.h
+        ObjectFeatures.h
+        Processor.h
         Utils.h
         )
 
@@ -18,6 +20,8 @@ set(SOURCE_FILES
         ImageUtils.cpp
         Utils.cpp
         main.cpp
+        ObjectFeatures.cpp
+        Processor.cpp
         )
 
 add_executable(pobr ${SOURCE_FILES} ${HEADER_FILES})

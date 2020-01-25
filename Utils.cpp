@@ -1,5 +1,6 @@
 #include "Utils.h"
 #include "Constants.h"
+#include <cmath>
 
 int Utils::limitValue(int val) {
     if (val > MAX_VAL) {
@@ -11,6 +12,16 @@ int Utils::limitValue(int val) {
     }
 }
 
-bool Utils::isInInterval(int val, int min, int max) {
+bool Utils::isInBounds(double val, double min, double max) {
     return val >= min && val <= max;
+}
+
+int Utils::boundValue(int val, int min, int max) {
+    if (val > max) return max;
+    if (val < min) return min;
+    return val;
+}
+
+double Utils::distance(int x1, int y1, int x2, int y2) {
+    return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
 }
