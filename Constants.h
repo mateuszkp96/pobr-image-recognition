@@ -16,4 +16,5 @@ const int HUE_IDX = 0;
 const int SAT_IDX = 1;
 const int VAL_IDX = 2;
 
+
 #endif //POBR_CONSTANTS_H

@@ -6,7 +6,11 @@ class Utils {
 public:
     static int limitValue(int val);
 
-    static bool isInInterval(int val, int min, int max);
+    static bool isInBounds(double val, double min, double max);
+
+    static int boundValue(int val, int min, int max);
+
+    static double distance(int x1, int y1, int x2, int y2);
 };
 
 
